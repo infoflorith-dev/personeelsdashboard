@@ -401,22 +401,22 @@
     }
   });
 
-  new Chart(document.getElementById('topChart'), {
-    type: 'bar',
-    data: {
-      labels: ['Roos van der Arend','Ramazan Doğrusöz','Ad Arendse','Colinda van der Steen','Ali Karaaslan','Aldona Magdziak','Lucy Kolodziej','Petra Kaptein','Richard de Jong','Nora van der Arend'],
-      datasets: [{
-        label: 'Dagen',
-        data: [152,81,76,53,50,43,43,39,35,34],
-        backgroundColor: '#2563eb'
-      }]
-    },
-    options: {
-      indexAxis:'y',
-      plugins:{legend:{display:false}},
-      scales:{x:{beginAtZero:true}}
-    }
-  });
+  const topChart = new Chart(document.getElementById('topChart'), {
+  type: 'bar',
+  data: {
+    labels: [],
+    datasets: [{
+      label: 'Dagen',
+      data: [],
+      backgroundColor: '#2563eb'
+    }]
+  },
+  options: {
+    indexAxis:'y',
+    plugins:{legend:{display:false}},
+    scales:{x:{beginAtZero:true}}
+  }
+});
 
   new Chart(document.getElementById('monthChart'), {
     type: 'line',
@@ -550,7 +550,11 @@ const otherDays = employees.reduce((sum, e) => sum + e.overig, 0);
     ((otherDays / totalDays) * 100).toFixed(1).replace('.', ',') + '% van totaal';
 
   const sorted = employees.sort((a,b) => b.totaal - a.totaal);
+const top10 = sorted.slice(0, 10);
 
+topChart.data.labels = top10.map(e => e.naam);
+topChart.data.datasets[0].data = top10.map(e => e.totaal);
+topChart.update();
   document.getElementById('employeeTable').innerHTML = sorted.map(e => `
     <tr>
       <td><span class="pill blue">${initials(e.naam)}</span>${e.naam}</td>
