@@ -480,7 +480,41 @@ function initials(name){
     .map(w => w[0].toUpperCase())
     .join('');
 }
+let currentSummary = {};
 
+function showEmployeeDetails(name){
+  const e = currentSummary[name];
+  if(!e) return;
+
+  document.getElementById('employeeDetails').innerHTML = `
+    <h3>${e.naam}</h3>
+    <div class="muted">Totaal afwezig: ${e.totaal} werkdagen</div>
+
+    <div class="detailblock">
+      <b>Ziek (${e.ziek} dagen)</b>
+    </div>
+
+    <div class="detailblock orangeline">
+      <b>Gedeeltelijk ziek (${e.gedeeltelijkZiek || 0} dagen)</b>
+    </div>
+
+    <div class="detailblock greenline">
+      <b>Vakantie (${e.vakantie} dagen)</b>
+    </div>
+
+    <div class="detailblock blueline">
+      <b>Tijd voor Tijd (${e.tijd} dagen)</b>
+    </div>
+
+    <div class="detailblock">
+      <b>Buitengewoon verlof (${e.buitengewoon || 0} dagen)</b>
+    </div>
+
+    <div class="detailblock orangeline">
+      <b>Overig (${e.overig} dagen)</b>
+    </div>
+  `;
+}
 function updateDashboard(summary){
   const vandaag = new Date();
 
