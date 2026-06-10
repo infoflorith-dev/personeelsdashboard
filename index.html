@@ -715,7 +715,30 @@ Object.keys(dayMap).forEach(naam => {
     summary[naam].totaal += 1;
   });
 });
+const monthTotals = {
+  ziek: Array(12).fill(0),
+  vakantie: Array(12).fill(0),
+  overig: Array(12).fill(0)
+};
 
+Object.values(dayMap).forEach(days => {
+  Object.entries(days).forEach(([dateKey, type]) => {
+    const maand = new Date(dateKey).getMonth();
+
+    if(type === 'ziek' || type === 'gedeeltelijkZiek'){
+      monthTotals.ziek[maand] += 1;
+    } else if(type === 'vakantie'){
+      monthTotals.vakantie[maand] += 1;
+    } else {
+      monthTotals.overig[maand] += 1;
+    }
+  });
+});
+
+monthChart.data.datasets[0].data = monthTotals.ziek;
+monthChart.data.datasets[1].data = monthTotals.vakantie;
+monthChart.data.datasets[2].data = monthTotals.overig;
+monthChart.update();
     updateDashboard(summary);
 
     alert(
