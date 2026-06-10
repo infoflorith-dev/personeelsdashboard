@@ -437,15 +437,34 @@ function excelDateToJSDate(value){
   return isNaN(date) ? null : date;
 }
 
+function dateKey(date){
+  return date.toISOString().split('T')[0];
+}
+
+const feestdagen2026 = [
+  '2026-01-01',
+  '2026-04-06',
+  '2026-04-27',
+  '2026-05-14',
+  '2026-05-25',
+  '2026-12-25'
+];
+
+function isFeestdag(date){
+  return feestdagen2026.includes(dateKey(date));
+}
+
 function countWorkdays(start, end){
   let count = 0;
   const current = new Date(start);
 
   while(current <= end){
     const day = current.getDay();
-    if(day !== 0 && day !== 6){
+
+    if(day !== 0 && day !== 6 && !isFeestdag(current)){
       count++;
     }
+
     current.setDate(current.getDate() + 1);
   }
 
@@ -663,7 +682,7 @@ if(eind > vandaag){
   while(current <= eind){
     const day = current.getDay();
 
-    if(day !== 0 && day !== 6){
+   if(day !== 0 && day !== 6 && !isFeestdag(current)){
       const dateKey = current.toISOString().split('T')[0];
 
       const priority = {
