@@ -625,7 +625,10 @@ rows.forEach(row => {
  const omschrijving = omschrijvingCol !== -1 ? cleanHeader(row[omschrijvingCol]) : '';
 let type = normalizeType(row[typeCol]);
 
-if(omschrijving.includes('gedeeltelijk ziek')){
+if(
+  omschrijving.includes('gedeeltelijk ziek') ||
+  omschrijving.includes('gedeeltelijke werken')
+){
   type = 'gedeeltelijkZiek';
 }
   const start = excelDateToJSDate(row[startCol]);
