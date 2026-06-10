@@ -597,37 +597,61 @@ document.getElementById('excelFile').addEventListener('change', function(e){
 
     const summary = {};
 
-    rows.forEach(row => {
-      const naam = cleanEmployeeName(row[medewerkerCol]);
-      const type = normalizeType(row[typeCol]);
-      const start = excelDateToJSDate(row[startCol]);
-      const eind = excelDateToJSDate(row[eindCol]);
+    const dayMap = {};
 
-      if(!naam || !start || !eind) return;
+rows.forEach(row => {
+  const naam = cleanEmployeeName(row[medewerkerCol]);
+  const type = normalizeType(row[typeCol]);
+  const start = excelDateToJSDate(row[startCol]);
+  const eind = excelDateToJSDate(row[eindCol]);
 
-      let days = countWorkdays(start, eind);
+  if(!naam || !start || !eind) return;
 
-      if(dagdeelCol !== -1){
-        const dagdeel = cleanHeader(row[dagdeelCol]);
-        if(dagdeel.includes('halve')) days = days / 2;
+  if(!dayMap[naam]) dayMap[naam] = {};
+
+  const current = new Date(start);
+
+  while(current <= eind){
+    const day = current.getDay();
+
+    if(day !== 0 && day !== 6){
+      const dateKey = current.toISOString().split('T')[0];
+
+      const priority = {
+        vakantie: 6,
+        tijd: 5,
+        buitengewoon: 4,
+        gedeeltelijkZiek: 3,
+        ziek: 2,
+        overig: 1
+      };
+
+      if(!dayMap[naam][dateKey] || priority[type] > priority[dayMap[naam][dateKey]]){
+        dayMap[naam][dateKey] = type;
       }
+    }
 
-      if(!summary[naam]){
-     summary[naam] = {
-  naam,
-  totaal: 0,
-  ziek: 0,
-  gedeeltelijkZiek: 0,
-  vakantie: 0,
-  tijd: 0,
-  buitengewoon: 0,
-  overig: 0
-};
-      }
+    current.setDate(current.getDate() + 1);
+  }
+});
 
-   summary[naam][type] += days;
-summary[naam].totaal += days;
-    });
+Object.keys(dayMap).forEach(naam => {
+  summary[naam] = {
+    naam,
+    totaal: 0,
+    ziek: 0,
+    gedeeltelijkZiek: 0,
+    vakantie: 0,
+    tijd: 0,
+    buitengewoon: 0,
+    overig: 0
+  };
+
+  Object.values(dayMap[naam]).forEach(type => {
+    summary[naam][type] += 1;
+    summary[naam].totaal += 1;
+  });
+});
 
     updateDashboard(summary);
 
