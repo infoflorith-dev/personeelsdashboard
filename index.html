@@ -162,13 +162,21 @@
       margin-bottom:16px;
     }
 
-    .chip{
-      background:#f8fafc;
-      border:1px solid #e2e8f0;
-      border-radius:9px;
-      padding:10px 14px;
-      font-size:13px;
-    }
+   .chip{
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+  border-radius:9px;
+  padding:10px 14px;
+  font-size:13px;
+  font-weight:700;
+}
+
+.chip.sick{color:#ef4444}
+.chip.partial{color:#f97316}
+.chip.holiday{color:#22c55e}
+.chip.time{color:#2563eb}
+.chip.special{color:#8b5cf6}
+.chip.other{color:#f59e0b}
 
     table{
       width:100%;
@@ -328,11 +336,12 @@
         <h2>Medewerkers</h2>
 
      <div class="filters">
-  <div class="chip">✅ Ziek</div>
-  <div class="chip">✅ Vakantie (vrij)</div>
-  <div class="chip">✅ Tijd voor Tijd</div>
-  <div class="chip">✅ Buitengewoon verlof</div>
-  <div class="chip">✅ Overig</div>
+ <div class="chip sick">Ziek</div>
+<div class="chip partial">Gedeeltelijk ziek</div>
+<div class="chip holiday">Vakantie (vrij)</div>
+<div class="chip time">Tijd voor Tijd</div>
+<div class="chip special">Buitengewoon verlof</div>
+<div class="chip other">Overig</div>
 
   <select id="sortSelect" class="chip">
     <option value="totaal">Sorteer op totaal dagen</option>
