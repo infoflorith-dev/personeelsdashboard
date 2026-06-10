@@ -464,7 +464,22 @@ color:#e2e8f0;
     }
   }
 });
+function barGradient(context){
+  const chart = context.chart;
+  const { ctx, chartArea } = chart;
 
+  if (!chartArea) {
+    return '#2563eb';
+  }
+
+  const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+
+  gradient.addColorStop(0, '#60a5fa');
+  gradient.addColorStop(0.35, '#3b82f6');
+  gradient.addColorStop(1, '#1d4ed8');
+
+  return gradient;
+}
   const topChart = new Chart(document.getElementById('topChart'), {
   type: 'bar',
   data: {
