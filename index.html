@@ -429,7 +429,30 @@
     options:{scales:{y:{beginAtZero:true}}}
   });
 
- document.getElementById('excelFile').addEventListener('change', function(e){
+function cleanHeader(value){
+  return String(value || '')
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, ' ');
+}
+
+function findColumn(headers, options){
+  const cleaned = headers.map(cleanHeader);
+
+  for(const option of options){
+    const index = cleaned.findIndex(h => h === cleanHeader(option));
+    if(index !== -1) return index;
+  }
+
+  for(const option of options){
+    const index = cleaned.findIndex(h => h.includes(cleanHeader(option)));
+    if(index !== -1) return index;
+  }
+
+  return -1;
+}
+
+document.getElementById('excelFile').addEventListener('change', function(e){
 
   const file = e.target.files[0];
   if(!file) return;
@@ -439,32 +462,51 @@
   reader.onload = function(event){
 
     const data = new Uint8Array(event.target.result);
-
-    const workbook = XLSX.read(data, {
-      type: 'array'
-    });
-
+    const workbook = XLSX.read(data, { type: 'array' });
     const firstSheet = workbook.SheetNames[0];
-
     const worksheet = workbook.Sheets[firstSheet];
 
-    const json = XLSX.utils.sheet_to_json(worksheet, {
-      header: 1
-    });
+    const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-   console.log(json);
+    const headerRowIndex = json.findIndex(row =>
+      row.some(cell => cleanHeader(cell).includes('medewerker')) &&
+      row.some(cell => cleanHeader(cell).includes('type')) &&
+      row.some(cell => cleanHeader(cell).includes('start'))
+    );
 
-alert(
-  'Excel geladen!\n\n' +
-  'Werkblad: ' + firstSheet +
-  '\nRijen gevonden: ' + json.length +
-  '\n\nBekijk nu F12 → Console'
-);
+    if(headerRowIndex === -1){
+      alert('Kolommen niet gevonden. Controleer of het Excelbestand kolommen heeft zoals Medewerker, Type, Start datum en Eind datum.');
+      return;
+    }
 
+    const headers = json[headerRowIndex];
+
+    const medewerkerCol = findColumn(headers, ['Medewerker', 'Naam', 'Werknemer', 'Personeelslid']);
+    const typeCol = findColumn(headers, ['Type', 'Soort', 'Afwezigheid']);
+    const startCol = findColumn(headers, ['Start datum', 'Startdatum', 'Vanaf', 'Begin datum', 'Begindatum']);
+    const eindCol = findColumn(headers, ['Eind datum', 'Einddatum', 'Tot', 'Tot en met']);
+
+    if(medewerkerCol === -1 || typeCol === -1 || startCol === -1 || eindCol === -1){
+      alert('Niet alle verplichte kolommen zijn gevonden.');
+      return;
+    }
+
+    const rows = json.slice(headerRowIndex + 1).filter(row =>
+      row[medewerkerCol] && row[typeCol] && row[startCol] && row[eindCol]
+    );
+
+    alert(
+      'Excel herkend!\n\n' +
+      'Werkblad: ' + firstSheet + '\n' +
+      'Kolom Medewerker: ' + headers[medewerkerCol] + '\n' +
+      'Kolom Type: ' + headers[typeCol] + '\n' +
+      'Kolom Start: ' + headers[startCol] + '\n' +
+      'Kolom Eind: ' + headers[eindCol] + '\n\n' +
+      'Geldige regels gevonden: ' + rows.length
+    );
   };
 
   reader.readAsArrayBuffer(file);
-
 });
 </script>
 
