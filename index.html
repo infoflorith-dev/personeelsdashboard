@@ -245,7 +245,7 @@
         <h1>Dashboard</h1>
         <div class="muted">Overzicht van afwezigheidsdagen</div>
       </div>
-      <div class="datebox">01-01-2025 t/m 31-12-2025</div>
+     <div class="datebox" id="dateRange">Laden...</div>
     </div>
 
     <section class="kpis">
@@ -511,6 +511,15 @@ function initials(name){
 }
 
 function updateDashboard(summary){
+  const vandaag = new Date();
+
+const datumTekst =
+  '01-01-' +
+  vandaag.getFullYear() +
+  ' t/m ' +
+  vandaag.toLocaleDateString('nl-NL');
+
+document.getElementById('dateRange').textContent = datumTekst;
   const employees = Object.values(summary);
   const totalEmployees = employees.length;
 
