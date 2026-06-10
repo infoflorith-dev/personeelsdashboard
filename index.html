@@ -430,10 +430,7 @@
   });
 
 function cleanHeader(value){
-  return String(value || '')
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, ' ');
+  return String(value || '').toLowerCase().trim().replace(/\s+/g, ' ');
 }
 
 function findColumn(headers, options){
@@ -450,6 +447,99 @@ function findColumn(headers, options){
   }
 
   return -1;
+}
+
+function excelDateToJSDate(value){
+  if(value instanceof Date) return value;
+
+  if(typeof value === 'number'){
+    const parsed = XLSX.SSF.parse_date_code(value);
+    return new Date(parsed.y, parsed.m - 1, parsed.d);
+  }
+
+  const date = new Date(value);
+  return isNaN(date) ? null : date;
+}
+
+function countWorkdays(start, end){
+  let count = 0;
+  const current = new Date(start);
+
+  while(current <= end){
+    const day = current.getDay();
+    if(day !== 0 && day !== 6){
+      count++;
+    }
+    current.setDate(current.getDate() + 1);
+  }
+
+  return count;
+}
+
+function cleanEmployeeName(name){
+  return String(name || '').replace(/^\d+\s*-\s*/, '').trim();
+}
+
+function normalizeType(type){
+  const t = cleanHeader(type);
+
+  if(t.includes('ziek')) return 'ziek';
+  if(t.includes('tijd voor tijd')) return 'tijd';
+  if(t.includes('buitengewoon')) return 'overig';
+  if(t.includes('cursus')) return 'overig';
+  if(t.includes('vrij') || t.includes('vakantie')) return 'vakantie';
+
+  return 'overig';
+}
+
+function initials(name){
+  return name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0,2)
+    .map(w => w[0].toUpperCase())
+    .join('');
+}
+
+function updateDashboard(summary){
+  const employees = Object.values(summary);
+  const totalEmployees = employees.length;
+
+  const totalDays = employees.reduce((sum, e) => sum + e.totaal, 0);
+  const sickDays = employees.reduce((sum, e) => sum + e.ziek, 0);
+  const holidayDays = employees.reduce((sum, e) => sum + e.vakantie, 0);
+  const otherDays = employees.reduce((sum, e) => sum + e.overig + e.tijd, 0);
+
+  document.getElementById('kpiEmployees').textContent = totalEmployees;
+  document.getElementById('kpiTotal').textContent = totalDays;
+  document.getElementById('kpiSick').textContent = sickDays;
+  document.getElementById('kpiHoliday').textContent = holidayDays;
+  document.getElementById('kpiOther').textContent = otherDays;
+
+  document.getElementById('kpiTotal').parentElement.querySelector('.small').textContent =
+    (totalDays / totalEmployees).toFixed(1).replace('.', ',') + ' dagen per medewerker';
+
+  document.getElementById('kpiSick').parentElement.querySelector('.small').textContent =
+    ((sickDays / totalDays) * 100).toFixed(1).replace('.', ',') + '% van totaal';
+
+  document.getElementById('kpiHoliday').parentElement.querySelector('.small').textContent =
+    ((holidayDays / totalDays) * 100).toFixed(1).replace('.', ',') + '% van totaal';
+
+  document.getElementById('kpiOther').parentElement.querySelector('.small').textContent =
+    ((otherDays / totalDays) * 100).toFixed(1).replace('.', ',') + '% van totaal';
+
+  const sorted = employees.sort((a,b) => b.totaal - a.totaal);
+
+  document.getElementById('employeeTable').innerHTML = sorted.map(e => `
+    <tr>
+      <td><span class="pill blue">${initials(e.naam)}</span>${e.naam}</td>
+      <td>${e.totaal}</td>
+      <td style="color:#ef4444">${e.ziek}</td>
+      <td style="color:#22c55e">${e.vakantie}</td>
+      <td>${e.tijd}</td>
+      <td>${e.overig}</td>
+    </tr>
+  `).join('');
 }
 
 document.getElementById('excelFile').addEventListener('change', function(e){
@@ -475,7 +565,7 @@ document.getElementById('excelFile').addEventListener('change', function(e){
     );
 
     if(headerRowIndex === -1){
-      alert('Kolommen niet gevonden. Controleer of het Excelbestand kolommen heeft zoals Medewerker, Type, Start datum en Eind datum.');
+      alert('Kolommen niet gevonden.');
       return;
     }
 
@@ -485,24 +575,50 @@ document.getElementById('excelFile').addEventListener('change', function(e){
     const typeCol = findColumn(headers, ['Type', 'Soort', 'Afwezigheid']);
     const startCol = findColumn(headers, ['Start datum', 'Startdatum', 'Vanaf', 'Begin datum', 'Begindatum']);
     const eindCol = findColumn(headers, ['Eind datum', 'Einddatum', 'Tot', 'Tot en met']);
-
-    if(medewerkerCol === -1 || typeCol === -1 || startCol === -1 || eindCol === -1){
-      alert('Niet alle verplichte kolommen zijn gevonden.');
-      return;
-    }
+    const dagdeelCol = findColumn(headers, ['Dag deel', 'Dagdeel']);
 
     const rows = json.slice(headerRowIndex + 1).filter(row =>
       row[medewerkerCol] && row[typeCol] && row[startCol] && row[eindCol]
     );
 
+    const summary = {};
+
+    rows.forEach(row => {
+      const naam = cleanEmployeeName(row[medewerkerCol]);
+      const type = normalizeType(row[typeCol]);
+      const start = excelDateToJSDate(row[startCol]);
+      const eind = excelDateToJSDate(row[eindCol]);
+
+      if(!naam || !start || !eind) return;
+
+      let days = countWorkdays(start, eind);
+
+      if(dagdeelCol !== -1){
+        const dagdeel = cleanHeader(row[dagdeelCol]);
+        if(dagdeel.includes('halve')) days = days / 2;
+      }
+
+      if(!summary[naam]){
+        summary[naam] = {
+          naam,
+          totaal: 0,
+          ziek: 0,
+          vakantie: 0,
+          tijd: 0,
+          overig: 0
+        };
+      }
+
+      summary[naam][type] += days;
+      summary[naam].totaal += days;
+    });
+
+    updateDashboard(summary);
+
     alert(
-      'Excel herkend!\n\n' +
-      'Werkblad: ' + firstSheet + '\n' +
-      'Kolom Medewerker: ' + headers[medewerkerCol] + '\n' +
-      'Kolom Type: ' + headers[typeCol] + '\n' +
-      'Kolom Start: ' + headers[startCol] + '\n' +
-      'Kolom Eind: ' + headers[eindCol] + '\n\n' +
-      'Geldige regels gevonden: ' + rows.length
+      'Dashboard bijgewerkt!\n\n' +
+      'Regels verwerkt: ' + rows.length + '\n' +
+      'Medewerkers gevonden: ' + Object.keys(summary).length
     );
   };
 
