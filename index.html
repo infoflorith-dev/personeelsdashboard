@@ -625,8 +625,14 @@ document.getElementById('excelFile').addEventListener('change', function(e){
 };
       }
 
-      summary[naam][type] += days;
-      summary[naam].totaal += days;
+    if(type === 'gedeeltelijkZiek'){
+  summary[naam].gedeeltelijkZiek += days;
+  summary[naam].ziek -= days;
+} else {
+  summary[naam][type] += days;
+}
+
+summary[naam].totaal += days;
     });
 
     updateDashboard(summary);
