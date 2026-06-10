@@ -429,12 +429,42 @@
     options:{scales:{y:{beginAtZero:true}}}
   });
 
-  document.getElementById('excelFile').addEventListener('change', function(e){
-    const file = e.target.files[0];
-    if(file){
-      alert('Bestand gekozen: ' + file.name + '\\n\\nIn de volgende stap gaan we deze Excel echt uitlezen.');
-    }
-  });
+ document.getElementById('excelFile').addEventListener('change', function(e){
+
+  const file = e.target.files[0];
+  if(!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(event){
+
+    const data = new Uint8Array(event.target.result);
+
+    const workbook = XLSX.read(data, {
+      type: 'array'
+    });
+
+    const firstSheet = workbook.SheetNames[0];
+
+    const worksheet = workbook.Sheets[firstSheet];
+
+    const json = XLSX.utils.sheet_to_json(worksheet, {
+      header: 1
+    });
+
+    console.log(json);
+
+    alert(
+      'Excel geladen!\n\n' +
+      'Werkblad: ' + firstSheet +
+      '\nRijen gevonden: ' + json.length
+    );
+
+  };
+
+  reader.readAsArrayBuffer(file);
+
+});
 </script>
 
 </body>
