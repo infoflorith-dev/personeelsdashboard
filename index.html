@@ -390,16 +390,16 @@
 </div>
 
 <script>
-  new Chart(document.getElementById('typeChart'), {
-    type: 'pie',
-    data: {
-      labels: ['Ziek', 'Vakantie (vrij)', 'Tijd voor Tijd', 'Buitengewoon verlof', 'Overig'],
-      datasets: [{
-        data: [268,369,27,23,20],
-        backgroundColor: ['#ef4444','#22c55e','#2563eb','#8b5cf6','#f59e0b']
-      }]
-    }
-  });
+  const typeChart = new Chart(document.getElementById('typeChart'), {
+  type: 'pie',
+  data: {
+    labels: ['Ziek', 'Vakantie (vrij)', 'Tijd voor Tijd', 'Buitengewoon verlof', 'Overig'],
+    datasets: [{
+      data: [],
+      backgroundColor: ['#ef4444', '#22c55e', '#2563eb', '#8b5cf6', '#f59e0b']
+    }]
+  }
+});
 
   const topChart = new Chart(document.getElementById('topChart'), {
   type: 'bar',
@@ -555,6 +555,15 @@ const top10 = sorted.slice(0, 10);
 topChart.data.labels = top10.map(e => e.naam);
 topChart.data.datasets[0].data = top10.map(e => e.totaal);
 topChart.update();
+  typeChart.data.datasets[0].data = [
+  sickDays,
+  holidayDays,
+  timeDays,
+  specialLeaveDays,
+  otherDays
+];
+
+typeChart.update();
   document.getElementById('employeeTable').innerHTML = sorted.map(e => `
     <tr>
       <td><span class="pill blue">${initials(e.naam)}</span>${e.naam}</td>
