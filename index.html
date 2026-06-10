@@ -604,15 +604,31 @@ const otherDays = employees.reduce((sum, e) => sum + e.overig, 0);
 
 const sortBy = document.getElementById('sortSelect')?.value || 'totaal';
 
+const sortConfig = {
+  totaal: { label: 'Top 10 meeste afwezigheidsdagen', color: '#2563eb' },
+  ziek: { label: 'Top 10 ziekteverzuimdagen', color: '#ef4444' },
+  gedeeltelijkZiek: { label: 'Top 10 gedeeltelijk ziek', color: '#f97316' },
+  vakantie: { label: 'Top 10 vakantiedagen', color: '#22c55e' },
+  tijd: { label: 'Top 10 Tijd voor Tijd dagen', color: '#2563eb' },
+  buitengewoon: { label: 'Top 10 buitengewoon verlof dagen', color: '#8b5cf6' },
+  overig: { label: 'Top 10 overige dagen', color: '#f59e0b' }
+};
+
+const activeSort = sortConfig[sortBy] || sortConfig.totaal;
+
 const sorted = employees.sort((a,b) => {
-    const valueA = a[sortBy] || 0;
-    const valueB = b[sortBy] || 0;
-    return valueB - valueA;
+  const valueA = a[sortBy] || 0;
+  const valueB = b[sortBy] || 0;
+  return valueB - valueA;
 });
+
 const top10 = sorted.slice(0, 10);
 
+document.querySelector('#topChart').closest('.card').querySelector('h2').textContent = activeSort.label;
+
 topChart.data.labels = top10.map(e => e.naam);
-topChart.data.datasets[0].data = top10.map(e => e.totaal);
+topChart.data.datasets[0].data = top10.map(e => e[sortBy] || 0);
+topChart.data.datasets[0].backgroundColor = activeSort.color;
 topChart.update();
   typeChart.data.datasets[0].data = [
   sickDays,
