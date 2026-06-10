@@ -590,7 +590,7 @@ document.getElementById('excelFile').addEventListener('change', function(e){
     const startCol = findColumn(headers, ['Start datum', 'Startdatum', 'Vanaf', 'Begin datum', 'Begindatum']);
     const eindCol = findColumn(headers, ['Eind datum', 'Einddatum', 'Tot', 'Tot en met']);
     const dagdeelCol = findColumn(headers, ['Dag deel', 'Dagdeel']);
-
+const omschrijvingCol = findColumn(headers, ['Omschrijving', 'Beschrijving']);
     const rows = json.slice(headerRowIndex + 1).filter(row =>
       row[medewerkerCol] && row[typeCol] && row[startCol] && row[eindCol]
     );
@@ -601,7 +601,12 @@ document.getElementById('excelFile').addEventListener('change', function(e){
 
 rows.forEach(row => {
   const naam = cleanEmployeeName(row[medewerkerCol]);
-  const type = normalizeType(row[typeCol]);
+ const omschrijving = omschrijvingCol !== -1 ? cleanHeader(row[omschrijvingCol]) : '';
+let type = normalizeType(row[typeCol]);
+
+if(omschrijving.includes('gedeeltelijk ziek')){
+  type = 'gedeeltelijkZiek';
+}
   const start = excelDateToJSDate(row[startCol]);
   const eind = excelDateToJSDate(row[eindCol]);
 
