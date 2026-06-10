@@ -327,13 +327,23 @@
       <div class="card">
         <h2>Medewerkers</h2>
 
-        <div class="filters">
-          <div class="chip">✅ Ziek</div>
-          <div class="chip">✅ Vakantie (vrij)</div>
-          <div class="chip">✅ Tijd voor Tijd</div>
-          <div class="chip">✅ Buitengewoon verlof</div>
-          <div class="chip">✅ Overig</div>
-        </div>
+     <div class="filters">
+  <div class="chip">✅ Ziek</div>
+  <div class="chip">✅ Vakantie (vrij)</div>
+  <div class="chip">✅ Tijd voor Tijd</div>
+  <div class="chip">✅ Buitengewoon verlof</div>
+  <div class="chip">✅ Overig</div>
+
+  <select id="sortSelect" class="chip">
+    <option value="totaal">Sorteer op totaal dagen</option>
+    <option value="ziek">Sorteer op ziekte</option>
+    <option value="gedeeltelijkZiek">Sorteer op gedeeltelijk ziek</option>
+    <option value="vakantie">Sorteer op vakantie</option>
+    <option value="tijd">Sorteer op tijd voor tijd</option>
+    <option value="buitengewoon">Sorteer op buitengewoon verlof</option>
+    <option value="overig">Sorteer op overig</option>
+  </select>
+</div>
 
         <table>
           <thead>
@@ -583,7 +593,13 @@ const otherDays = employees.reduce((sum, e) => sum + e.overig, 0);
   document.getElementById('kpiOther').parentElement.querySelector('.small').textContent =
     ((otherDays / totalDays) * 100).toFixed(1).replace('.', ',') + '% van totaal';
 
-  const sorted = employees.sort((a,b) => b.totaal - a.totaal);
+const sortBy = document.getElementById('sortSelect')?.value || 'totaal';
+
+const sorted = employees.sort((a,b) => {
+    const valueA = a[sortBy] || 0;
+    const valueB = b[sortBy] || 0;
+    return valueB - valueA;
+});
 const top10 = sorted.slice(0, 10);
 
 topChart.data.labels = top10.map(e => e.naam);
@@ -751,7 +767,11 @@ monthChart.data.datasets[1].data = monthTotals.vakantie;
 monthChart.data.datasets[2].data = monthTotals.overig;
 monthChart.update();
     updateDashboard(summary);
+window.currentSummary = summary;
 
+document.getElementById('sortSelect').onchange = function(){
+    updateDashboard(window.currentSummary);
+};
     alert(
       'Dashboard bijgewerkt!\n\n' +
       'Regels verwerkt: ' + rows.length + '\n' +
