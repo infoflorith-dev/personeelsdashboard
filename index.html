@@ -389,7 +389,7 @@
 </div>
 
 <script>
-  const typeChart = new Chart(document.getElementById('typeChart'), {
+ const typeChart = new Chart(document.getElementById('typeChart'), {
   type: 'pie',
   data: {
     labels: ['Ziek', 'Vakantie (vrij)', 'Tijd voor Tijd', 'Buitengewoon verlof', 'Overig'],
@@ -397,6 +397,17 @@
       data: [],
       backgroundColor: ['#ef4444', '#22c55e', '#2563eb', '#8b5cf6', '#f59e0b']
     }]
+  },
+  options: {
+    onClick: function(event, elements){
+      if(!elements.length) return;
+
+      const clickedIndex = elements[0].index;
+      const sortValues = ['ziek', 'vakantie', 'tijd', 'buitengewoon', 'overig'];
+
+      document.getElementById('sortSelect').value = sortValues[clickedIndex];
+      updateDashboard(window.currentSummary);
+    }
   }
 });
 
