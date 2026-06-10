@@ -536,7 +536,7 @@ topChart.update();
 
 typeChart.update();
    document.getElementById('employeeTable').innerHTML = sorted.map(e => `
-    <tr>
+   <tr onclick="showEmployeeDetails('${e.naam}')" style="cursor:pointer">
       <td><span class="pill blue">${initials(e.naam)}</span>${e.naam}</td>
      <td>${e.totaal}</td>
 <td style="color:#ef4444">${e.ziek}</td>
