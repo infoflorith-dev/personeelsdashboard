@@ -327,11 +327,13 @@
           <thead>
             <tr>
               <th>Medewerker</th>
-              <th>Totaal dagen</th>
-              <th>Ziek</th>
-              <th>Vakantie</th>
-              <th>Tijd voor Tijd</th>
-              <th>Overig</th>
+<th>Totaal dagen</th>
+<th>Ziek</th>
+<th>Gedeeltelijk ziek</th>
+<th>Vakantie</th>
+<th>Tijd voor Tijd</th>
+<th>Buitengewoon verlof</th>
+<th>Overig</th>
             </tr>
           </thead>
           <tbody id="employeeTable">
@@ -543,11 +545,13 @@ const otherDays = employees.reduce((sum, e) => sum + e.overig, 0);
   document.getElementById('employeeTable').innerHTML = sorted.map(e => `
     <tr>
       <td><span class="pill blue">${initials(e.naam)}</span>${e.naam}</td>
-      <td>${e.totaal}</td>
-      <td style="color:#ef4444">${e.ziek}</td>
-      <td style="color:#22c55e">${e.vakantie}</td>
-      <td>${e.tijd}</td>
-      <td>${e.overig}</td>
+     <td>${e.totaal}</td>
+<td style="color:#ef4444">${e.ziek}</td>
+<td style="color:#f97316">${e.gedeeltelijkZiek || 0}</td>
+<td style="color:#22c55e">${e.vakantie}</td>
+<td>${e.tijd}</td>
+<td style="color:#8b5cf6">${e.buitengewoon || 0}</td>
+<td>${e.overig}</td>
     </tr>
   `).join('');
 }
