@@ -483,11 +483,18 @@ function cleanEmployeeName(name){
 function normalizeType(type){
   const t = cleanHeader(type);
 
+  if(t.includes('gedeeltelijk') && t.includes('ziek')) return 'gedeeltelijkZiek';
+  if(t.includes('deels') && t.includes('ziek')) return 'gedeeltelijkZiek';
+
   if(t.includes('ziek')) return 'ziek';
+
   if(t.includes('tijd voor tijd')) return 'tijd';
-  if(t.includes('buitengewoon')) return 'overig';
-  if(t.includes('cursus')) return 'overig';
+
+  if(t.includes('buitengewoon')) return 'buitengewoon';
+
   if(t.includes('vrij') || t.includes('vakantie')) return 'vakantie';
+
+  if(t.includes('cursus')) return 'overig';
 
   return 'overig';
 }
@@ -505,10 +512,13 @@ function updateDashboard(summary){
   const employees = Object.values(summary);
   const totalEmployees = employees.length;
 
-  const totalDays = employees.reduce((sum, e) => sum + e.totaal, 0);
-  const sickDays = employees.reduce((sum, e) => sum + e.ziek, 0);
-  const holidayDays = employees.reduce((sum, e) => sum + e.vakantie, 0);
-  const otherDays = employees.reduce((sum, e) => sum + e.overig + e.tijd, 0);
+const totalDays = employees.reduce((sum, e) => sum + e.totaal, 0);
+const sickDays = employees.reduce((sum, e) => sum + e.ziek, 0);
+const partialSickDays = employees.reduce((sum, e) => sum + (e.gedeeltelijkZiek || 0), 0);
+const holidayDays = employees.reduce((sum, e) => sum + e.vakantie, 0);
+const timeDays = employees.reduce((sum, e) => sum + e.tijd, 0);
+const specialLeaveDays = employees.reduce((sum, e) => sum + (e.buitengewoon || 0), 0);
+const otherDays = employees.reduce((sum, e) => sum + e.overig, 0);
 
   document.getElementById('kpiEmployees').textContent = totalEmployees;
   document.getElementById('kpiTotal').textContent = totalDays;
@@ -599,14 +609,16 @@ document.getElementById('excelFile').addEventListener('change', function(e){
       }
 
       if(!summary[naam]){
-        summary[naam] = {
-          naam,
-          totaal: 0,
-          ziek: 0,
-          vakantie: 0,
-          tijd: 0,
-          overig: 0
-        };
+     summary[naam] = {
+  naam,
+  totaal: 0,
+  ziek: 0,
+  gedeeltelijkZiek: 0,
+  vakantie: 0,
+  tijd: 0,
+  buitengewoon: 0,
+  overig: 0
+};
       }
 
       summary[naam][type] += days;
