@@ -950,9 +950,11 @@ Object.values(dayMap).forEach(days => {
   });
 });
 
-monthChart.data.datasets[0].data = monthTotals.ziek;
-monthChart.data.datasets[1].data = monthTotals.vakantie;
-monthChart.data.datasets[2].data = monthTotals.overig;
+const huidigeMaand = new Date().getMonth();
+
+monthChart.data.datasets[0].data = monthTotals.ziek.map((v, i) => i > huidigeMaand ? null : v);
+monthChart.data.datasets[1].data = monthTotals.vakantie.map((v, i) => i > huidigeMaand ? null : v);
+monthChart.data.datasets[2].data = monthTotals.overig.map((v, i) => i > huidigeMaand ? null : v);
 monthChart.update();
     updateDashboard(summary);
 window.currentSummary = summary;
