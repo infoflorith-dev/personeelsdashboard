@@ -950,11 +950,15 @@ Object.values(dayMap).forEach(days => {
   });
 });
 
-const huidigeMaand = new Date().getMonth();
+const laatsteMaand = Math.max(
+  ...Object.values(dayMap).flatMap(days =>
+    Object.keys(days).map(dateKey => new Date(dateKey).getMonth())
+  )
+);
 
-monthChart.data.datasets[0].data = monthTotals.ziek.map((v, i) => i > huidigeMaand ? null : v);
-monthChart.data.datasets[1].data = monthTotals.vakantie.map((v, i) => i > huidigeMaand ? null : v);
-monthChart.data.datasets[2].data = monthTotals.overig.map((v, i) => i > huidigeMaand ? null : v);
+monthChart.data.datasets[0].data = monthTotals.ziek.map((v, i) => i > laatsteMaand ? null : v);
+monthChart.data.datasets[1].data = monthTotals.vakantie.map((v, i) => i > laatsteMaand ? null : v);
+monthChart.data.datasets[2].data = monthTotals.overig.map((v, i) => i > laatsteMaand ? null : v);
 monthChart.update();
     updateDashboard(summary);
 window.currentSummary = summary;
