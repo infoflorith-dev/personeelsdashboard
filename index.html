@@ -231,11 +231,11 @@
       font-size:14px;
     }
 
-    th,td{
-      border-bottom:1px solid #e2e8f0;
-      padding:13px;
-      text-align:left;
-    }
+  th,td{
+  border-bottom:1px solid rgba(59,130,246,.18);
+  padding:13px;
+  text-align:left;
+}
 
     th{
     color:#93c5fd;
@@ -447,10 +447,14 @@ color:#e2e8f0;
   type: 'pie',
   data: {
     labels: ['Ziek', 'Vakantie (vrij)', 'Tijd voor Tijd', 'Buitengewoon verlof', 'Overig'],
-    datasets: [{
-      data: [],
-      backgroundColor: ['#ef4444', '#22c55e', '#2563eb', '#8b5cf6', '#f59e0b']
-    }]
+   datasets: [{
+  data: [],
+  backgroundColor: ['#ef4444', '#22c55e', '#2563eb', '#8b5cf6', '#f59e0b'],
+  borderColor: 'rgba(5,11,23,.85)',
+  borderWidth: 2,
+  hoverBorderColor: 'rgba(147,197,253,.35)',
+  hoverBorderWidth: 2
+}]
   },
   options: {
     onClick: function(event, elements){
