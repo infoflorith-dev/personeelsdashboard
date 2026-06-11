@@ -479,7 +479,8 @@ color:#e2e8f0;
 
   </main>
 </div>
-Chart.defaults.color = '#dbeafe';
+<script>
+  Chart.defaults.color = '#dbeafe';
 Chart.defaults.font.family = 'Arial';
 Chart.defaults.font.size = 13;
 Chart.defaults.plugins.legend.labels.color = '#dbeafe';
@@ -487,7 +488,6 @@ Chart.defaults.plugins.legend.labels.font = {
   size: 13,
   weight: '700'
 };
-<script>
  const typeChart = new Chart(document.getElementById('typeChart'), {
   type: 'pie',
   data: {
