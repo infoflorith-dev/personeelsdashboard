@@ -950,11 +950,20 @@ Object.values(dayMap).forEach(days => {
   });
 });
 
-const laatsteMaand = Math.max(
-  ...Object.values(dayMap).flatMap(days =>
-    Object.keys(days).map(dateKey => new Date(dateKey).getMonth())
-  )
+const vandaag = new Date();
+vandaag.setHours(0,0,0,0);
+
+const alleDatums = Object.values(dayMap).flatMap(days =>
+  Object.keys(days).map(dateKey => new Date(dateKey))
 );
+
+const jarenInBestand = [...new Set(alleDatums.map(d => d.getFullYear()))];
+const bestandJaar = jarenInBestand[0];
+
+const laatsteMaand =
+  bestandJaar === vandaag.getFullYear()
+    ? vandaag.getMonth()
+    : Math.max(...alleDatums.map(d => d.getMonth()));
 
 monthChart.data.datasets[0].data = monthTotals.ziek.map((v, i) => i > laatsteMaand ? null : v);
 monthChart.data.datasets[1].data = monthTotals.vakantie.map((v, i) => i > laatsteMaand ? null : v);
