@@ -722,11 +722,22 @@ function updateDashboard(summary){
   currentSummary = summary;
   const vandaag = new Date();
 
+const alleDatumsVoorPeriode = Object.values(currentSummary).length
+  ? Object.values(dayMap || {}).flatMap(days => Object.keys(days).map(d => new Date(d)))
+  : [];
+
+const startDatum = alleDatumsVoorPeriode.length
+  ? new Date(Math.min(...alleDatumsVoorPeriode))
+  : new Date(vandaag.getFullYear(), 0, 1);
+
+const eindDatum = alleDatumsVoorPeriode.length
+  ? new Date(Math.max(...alleDatumsVoorPeriode))
+  : vandaag;
+
 const datumTekst =
-  '01-01-' +
-  vandaag.getFullYear() +
+  startDatum.toLocaleDateString('nl-NL') +
   ' t/m ' +
-  vandaag.toLocaleDateString('nl-NL');
+  eindDatum.toLocaleDateString('nl-NL');
 
 document.getElementById('dateRange').textContent = datumTekst;
   const employees = Object.values(summary);
