@@ -932,7 +932,13 @@ const monthTotals = {
 
 Object.values(dayMap).forEach(days => {
   Object.entries(days).forEach(([dateKey, type]) => {
-    const maand = new Date(dateKey).getMonth();
+    const datum = new Date(dateKey);
+    const vandaag = new Date();
+    vandaag.setHours(0,0,0,0);
+
+    if(datum > vandaag) return;
+
+    const maand = datum.getMonth();
 
     if(type === 'ziek' || type === 'gedeeltelijkZiek'){
       monthTotals.ziek[maand] += 1;
