@@ -762,10 +762,16 @@ if(monthCanvas){
   const maanden = ['Jan','Feb','Mrt','Apr','Mei','Jun','Jul','Aug','Sep','Okt','Nov','Dec'];
   const maandData = Array(12).fill(0);
 
-  (e.dagen || []).forEach(d => {
-    const maand = new Date(d.datum).getMonth();
-    maandData[maand]++;
-  });
+ const actiefJaar = new Date().getFullYear();
+
+(e.dagen || []).forEach(d => {
+  const datum = new Date(d.datum);
+
+  if(datum.getFullYear() !== actiefJaar) return;
+
+  const maand = datum.getMonth();
+  maandData[maand]++;
+});
 
   window.employeeMonthChartInstance = new Chart(monthCanvas,{
     type:'bar',
