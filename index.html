@@ -694,41 +694,40 @@ function showEmployeeProfile(naam){
           hoverOffset: 12
         }]
       },
-      options: {
-        cutout: '58%',
-plugins: {
-  legend: {
-    position: 'right',
-    labels: {
-      generateLabels(chart) {
+    options: {
+  cutout: '58%',
+  plugins: {
+    legend: {
+      position: 'right',
+      labels: {
+        generateLabels(chart) {
 
-        const data = chart.data.datasets[0].data;
-        const totaal = data.reduce((a,b) => a + b, 0);
+          const data = chart.data.datasets[0].data;
+          const totaal = data.reduce((a,b) => a + b, 0);
 
-        return chart.data.labels.map((label, i) => {
+          return chart.data.labels.map((label, i) => {
 
-          const waarde = data[i];
-          const percentage =
-            totaal > 0
-              ? ((waarde / totaal) * 100).toFixed(1)
-              : 0;
+            const waarde = data[i];
+            const percentage =
+              totaal > 0
+                ? ((waarde / totaal) * 100).toFixed(1)
+                : 0;
 
-          return {
-            text: `${percentage}% ${label}`,
-            fontColor: '#dbeafe',
-            fillStyle: chart.data.datasets[0].backgroundColor[i],
-            strokeStyle: chart.data.datasets[0].backgroundColor[i],
-            lineWidth: 0,
-            hidden: false,
-            index: i
-          };
-        });
+            return {
+              text: `${percentage}% ${label}`,
+              fontColor: '#dbeafe',
+              fillStyle: chart.data.datasets[0].backgroundColor[i],
+              strokeStyle: chart.data.datasets[0].backgroundColor[i],
+              lineWidth: 0,
+              hidden: false,
+              index: i
+            };
+          });
+        }
       }
     }
-  },
-  tooltip: {
-    enabled: true
   }
+}
 }
         }
       }
