@@ -694,7 +694,7 @@ function showEmployeeProfile(naam){
           hoverOffset: 12
         }]
       },
-        options: {
+            options: {
         cutout: '58%',
         plugins: {
           legend: {
@@ -725,7 +725,29 @@ function showEmployeeProfile(naam){
             }
           }
         }
-      }
+      },
+      plugins: [{
+        id: 'employeeCenterText',
+        afterDraw(chart) {
+          const { ctx, chartArea } = chart;
+          const centerX = (chartArea.left + chartArea.right) / 2;
+          const centerY = (chartArea.top + chartArea.bottom) / 2;
+
+          ctx.save();
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 28px Arial';
+          ctx.fillText(`${e.totaal}`, centerX, centerY - 10);
+
+          ctx.fillStyle = '#8fa7d6';
+          ctx.font = '13px Arial';
+          ctx.fillText('totaal', centerX, centerY + 18);
+
+          ctx.restore();
+        }
+      }]
     });
   }, 0);
 }
