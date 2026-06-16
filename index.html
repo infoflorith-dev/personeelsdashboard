@@ -353,6 +353,8 @@ color:#e2e8f0;
 
   <main class="main">
 
+<div id="dashboardPage">
+
     <div class="topbar">
       <div>
         <h1>Dashboard</h1>
@@ -476,10 +478,45 @@ color:#e2e8f0;
   </div>
 </div>
     </section>
+</div>
 
+<div id="employeesPage" style="display:none;">
+  <div class="topbar">
+    <div>
+      <h1>Medewerkers</h1>
+      <div class="muted">Persoonlijke analyse per medewerker</div>
+    </div>
+  </div>
+
+  <div class="card" style="padding:30px;">
+    <h2>Medewerkerspagina</h2>
+    <p style="color:#94a3b8;">
+      Hier komt straks het medewerkeroverzicht.
+    </p>
+  </div>
+</div>
   </main>
 </div>
 <script>
+  function showPage(page){
+
+  document.getElementById('dashboardPage').style.display =
+    page === 'dashboard' ? 'block' : 'none';
+
+  document.getElementById('employeesPage').style.display =
+    page === 'employees' ? 'block' : 'none';
+
+  document.getElementById('navDashboard').classList.remove('active');
+  document.getElementById('navEmployees').classList.remove('active');
+
+  if(page === 'dashboard'){
+    document.getElementById('navDashboard').classList.add('active');
+  }
+
+  if(page === 'employees'){
+    document.getElementById('navEmployees').classList.add('active');
+  }
+}
   Chart.defaults.color = '#dbeafe';
 Chart.defaults.font.family = 'Arial';
 Chart.defaults.font.size = 13;
