@@ -784,17 +784,59 @@ function showEmployeeDetails(name){
 </div>
   `;
 }
+function renderEmployeeList(summary){
+  const list = document.getElementById('employeeList');
+  const search = document.getElementById('employeeSearch');
+
+  if(!list) return;
+
+  const employees = Object.values(summary || {})
+    .sort((a,b) => a.naam.localeCompare(b.naam));
+
+  const searchText = search ? search.value.toLowerCase().trim() : '';
+
+  const filtered = employees.filter(e =>
+    e.naam.toLowerCase().includes(searchText)
+  );
+
+  if(filtered.length === 0){
+    list.innerHTML = `
+      <div class="muted">
+        Geen medewerkers gevonden.
+      </div>
+    `;
+    return;
+  }
+
+  list.innerHTML = filtered.map(e => `
+    <div
+      onclick="showEmployeeProfile('${e.naam}')"
+      style="
+        padding:12px;
+        border-bottom:1px solid rgba(59,130,246,.18);
+        cursor:pointer;
+        color:#dbeafe;
+        font-weight:700;
+      "
+    >
+      ${e.naam}
+    </div>
+  `).join('');
+}
+
 function updateDashboard(summary){
   currentSummary = summary;
+  renderEmployeeList(summary);
+
   const vandaag = new Date();
 
-const datumTekst =
-  '01-01-' +
-  vandaag.getFullYear() +
-  ' t/m ' +
-  vandaag.toLocaleDateString('nl-NL');
+  const datumTekst =
+    '01-01-' +
+    vandaag.getFullYear() +
+    ' t/m ' +
+    vandaag.toLocaleDateString('nl-NL');
 
-document.getElementById('dateRange').textContent = datumTekst;
+  document.getElementById('dateRange').textContent = datumTekst;
   const employees = Object.values(summary);
   const totalEmployees = employees.length;
 
