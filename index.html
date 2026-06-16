@@ -1299,28 +1299,36 @@ if(eind > vandaag){
   }
 });
 
+const activeYear = Math.max(
+  ...Object.values(dayMap).flatMap(days =>
+    Object.keys(days).map(dateKey => new Date(dateKey).getFullYear())
+  )
+);
+
 Object.keys(dayMap).forEach(naam => {
-summary[naam] = {
-  naam,
-  totaal: 0,
-  ziek: 0,
-  gedeeltelijkZiek: 0,
-  vakantie: 0,
-  tijd: 0,
-  buitengewoon: 0,
-  overig: 0,
-  dagen: []
-};
+  summary[naam] = {
+    naam,
+    totaal: 0,
+    ziek: 0,
+    gedeeltelijkZiek: 0,
+    vakantie: 0,
+    tijd: 0,
+    buitengewoon: 0,
+    overig: 0,
+    dagen: []
+  };
 
   Object.entries(dayMap[naam]).forEach(([datum, type]) => {
-  summary[naam][type] += 1;
-  summary[naam].totaal += 1;
+    summary[naam].dagen.push({
+      datum,
+      type
+    });
 
-  summary[naam].dagen.push({
-    datum,
-    type
+    if(new Date(datum).getFullYear() !== activeYear) return;
+
+    summary[naam][type] += 1;
+    summary[naam].totaal += 1;
   });
-});
 });
 const monthTotals = {
   ziek: Array(12).fill(0),
@@ -1331,6 +1339,7 @@ const monthTotals = {
 Object.values(dayMap).forEach(days => {
   Object.entries(days).forEach(([dateKey, type]) => {
     const datum = new Date(dateKey);
+    if(datum.getFullYear() !== activeYear) return;
     const vandaag = new Date();
     vandaag.setHours(0,0,0,0);
 
