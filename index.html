@@ -527,14 +527,25 @@ color:#e2e8f0;
   </main>
 </div>
 <script>
-  function showEmployeeProfile(naam){
+function showEmployeeProfile(naam){
   const e = currentSummary[naam];
   if(!e) return;
 
+  const sortedDays = [...(e.dagen || [])].sort((a,b) => new Date(b.datum) - new Date(a.datum));
+  const laatsteRegistratie = sortedDays.length
+    ? new Date(sortedDays[0].datum).toLocaleDateString('nl-NL')
+    : '-';
+
   document.getElementById('employeeProfile').innerHTML = `
-    <h2>👤 ${e.naam}</h2>
-    <div class="muted" style="margin-bottom:22px;">
-      Totaal afwezig: ${e.totaal} dagen
+    <div class="card" style="padding:22px;margin-bottom:18px;">
+      <div style="display:flex;align-items:center;gap:18px;">
+        <div class="icon blue" style="width:72px;height:72px;border-radius:50%;font-size:34px;">👤</div>
+        <div>
+          <h2 style="margin:0 0 8px 0;">${e.naam}</h2>
+          <div class="muted">📅 Laatste registratie: ${laatsteRegistratie}</div>
+          <div class="muted" style="margin-top:6px;">⏱️ Totaal afwezig: ${e.totaal} dagen</div>
+        </div>
+      </div>
     </div>
 
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:26px;">
