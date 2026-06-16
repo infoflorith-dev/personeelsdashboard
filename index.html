@@ -627,10 +627,12 @@ function showEmployeeProfile(naam){
 </div>
 </div>
 
-  <div style="background:#081428;border:1px solid rgba(59,130,246,.18);border-radius:16px;padding:18px;min-height:260px;box-shadow:0 10px 30px rgba(0,0,0,.35);">
-    <h3 style="margin-top:0;">Cumulatief verzuim</h3>
-    <div class="muted">Hier komt de cumulatieve lijn.</div>
+ <div style="background:#081428;border:1px solid rgba(59,130,246,.18);border-radius:16px;padding:18px;min-height:260px;box-shadow:0 10px 30px rgba(0,0,0,.35);">
+  <h3 style="margin-top:0;">Cumulatief verzuim</h3>
+  <div style="height:210px;">
+    <canvas id="employeeCumulativeChart"></canvas>
   </div>
+</div>
 
 </div>
 
@@ -807,7 +809,60 @@ const actiefJaar = Math.max(
     }
   });
 
-}  
+} 
+      const cumulativeCanvas = document.getElementById('employeeCumulativeChart');
+
+if(cumulativeCanvas){
+
+  if(window.employeeCumulativeChartInstance){
+    window.employeeCumulativeChartInstance.destroy();
+  }
+
+  const cumulativeData = [];
+  let runningTotal = 0;
+
+  maandData.forEach(value => {
+    runningTotal += value;
+    cumulativeData.push(runningTotal);
+  });
+
+  window.employeeCumulativeChartInstance = new Chart(cumulativeCanvas,{
+    type:'line',
+    data:{
+      labels: maanden,
+      datasets:[{
+        label:'Cumulatief',
+        data: cumulativeData,
+        borderColor:'#3b82f6',
+        backgroundColor:'rgba(59,130,246,.18)',
+        borderWidth:3,
+        pointRadius:4,
+        pointBackgroundColor:'#60a5fa',
+        tension:.35,
+        fill:true
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false}
+      },
+      scales:{
+        x:{
+          ticks:{color:'#dbeafe'},
+          grid:{color:'rgba(255,255,255,.05)'}
+        },
+        y:{
+          beginAtZero:true,
+          ticks:{color:'#dbeafe'},
+          grid:{color:'rgba(255,255,255,.05)'}
+        }
+      }
+    }
+  });
+
+}
   }, 0);
 }
   
