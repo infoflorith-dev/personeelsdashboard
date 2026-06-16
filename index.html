@@ -759,10 +759,12 @@ if(monthCanvas){
     window.employeeMonthChartInstance.destroy();
   }
 
-  const maanden = ['Jan','Feb','Mrt','Apr','Mei','Jun','Jul','Aug','Sep','Okt','Nov','Dec'];
-  const maandData = Array(12).fill(0);
+ const maanden = ['Jan','Feb','Mrt','Apr','Mei','Jun','Jul','Aug','Sep','Okt','Nov','Dec'];
+const maandData = Array(12).fill(0);
 
- const actiefJaar = new Date().getFullYear();
+const actiefJaar = Math.max(
+  ...(e.dagen || []).map(d => new Date(d.datum).getFullYear())
+);
 
 (e.dagen || []).forEach(d => {
   const datum = new Date(d.datum);
