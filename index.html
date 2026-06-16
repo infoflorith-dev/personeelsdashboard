@@ -616,9 +616,9 @@ function showEmployeeProfile(naam){
 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:22px;">
 
   <div style="background:#081428;border:1px solid rgba(59,130,246,.18);border-radius:16px;padding:18px;min-height:260px;box-shadow:0 10px 30px rgba(0,0,0,.35);">
-    <h3 style="margin-top:0;">Verdeling per type</h3>
-    <div class="muted">Hier komt de donutgrafiek van deze medewerker.</div>
-  </div>
+  <h3 style="margin-top:0;">Verdeling per type</h3>
+  <canvas id="employeeTypeChart" style="max-height:210px;"></canvas>
+</div>
 
   <div style="background:#081428;border:1px solid rgba(59,130,246,.18);border-radius:16px;padding:18px;min-height:260px;box-shadow:0 10px 30px rgba(0,0,0,.35);">
     <h3 style="margin-top:0;">Afwezigheid per maand</h3>
@@ -653,6 +653,57 @@ function showEmployeeProfile(naam){
       </tbody>
     </table>
   `;
+    setTimeout(() => {
+    const canvas = document.getElementById('employeeTypeChart');
+    if(!canvas) return;
+
+    if(window.employeeTypeChartInstance){
+      window.employeeTypeChartInstance.destroy();
+    }
+
+    window.employeeTypeChartInstance = new Chart(canvas, {
+      type: 'doughnut',
+      data: {
+        labels: [
+          'Ziek',
+          'Gedeeltelijk ziek',
+          'Vakantie',
+          'Tijd voor Tijd',
+          'Buitengewoon verlof',
+          'Overig'
+        ],
+        datasets: [{
+          data: [
+            e.ziek,
+            e.gedeeltelijkZiek || 0,
+            e.vakantie,
+            e.tijd,
+            e.buitengewoon || 0,
+            e.overig
+          ],
+          backgroundColor: [
+            '#ef4444',
+            '#f97316',
+            '#22c55e',
+            '#2563eb',
+            '#8b5cf6',
+            '#f59e0b'
+          ],
+          borderColor: '#050b17',
+          borderWidth: 3,
+          hoverOffset: 12
+        }]
+      },
+      options: {
+        cutout: '58%',
+        plugins: {
+          legend: {
+            position: 'right'
+          }
+        }
+      }
+    });
+  }, 0);
 }
   function showPage(page){
 
