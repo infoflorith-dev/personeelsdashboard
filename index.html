@@ -818,13 +818,29 @@ if(cumulativeCanvas){
     window.employeeCumulativeChartInstance.destroy();
   }
 
-  const cumulativeData = [];
-  let runningTotal = 0;
+ const maanden = ['Jan','Feb','Mrt','Apr','Mei','Jun','Jul','Aug','Sep','Okt','Nov','Dec'];
+const cumulativeMonthData = Array(12).fill(0);
 
-  maandData.forEach(value => {
-    runningTotal += value;
-    cumulativeData.push(runningTotal);
-  });
+const actiefJaar = Math.max(
+  ...(e.dagen || []).map(d => new Date(d.datum).getFullYear())
+);
+
+(e.dagen || []).forEach(d => {
+  const datum = new Date(d.datum);
+
+  if(datum.getFullYear() !== actiefJaar) return;
+
+  const maand = datum.getMonth();
+  cumulativeMonthData[maand]++;
+});
+
+const cumulativeData = [];
+let runningTotal = 0;
+
+cumulativeMonthData.forEach(value => {
+  runningTotal += value;
+  cumulativeData.push(runningTotal);
+});
 
   window.employeeCumulativeChartInstance = new Chart(cumulativeCanvas,{
     type:'line',
