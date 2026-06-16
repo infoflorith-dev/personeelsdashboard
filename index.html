@@ -621,9 +621,9 @@ function showEmployeeProfile(naam){
 </div>
 
   <div style="background:#081428;border:1px solid rgba(59,130,246,.18);border-radius:16px;padding:18px;min-height:260px;box-shadow:0 10px 30px rgba(0,0,0,.35);">
-    <h3 style="margin-top:0;">Afwezigheid per maand</h3>
-    <div class="muted">Hier komt de maandgrafiek van deze medewerker.</div>
-  </div>
+  <h3 style="margin-top:0;">Afwezigheid per maand</h3>
+  <canvas id="employeeMonthChart" style="max-height:210px;"></canvas>
+</div>>
 
   <div style="background:#081428;border:1px solid rgba(59,130,246,.18);border-radius:16px;padding:18px;min-height:260px;box-shadow:0 10px 30px rgba(0,0,0,.35);">
     <h3 style="margin-top:0;">Cumulatief verzuim</h3>
@@ -751,6 +751,54 @@ function showEmployeeProfile(naam){
     });
   }, 0);
 }
+    const monthCanvas = document.getElementById('employeeMonthChart');
+
+  if(monthCanvas){
+
+    if(window.employeeMonthChartInstance){
+      window.employeeMonthChartInstance.destroy();
+    }
+
+    const maanden = ['Jan','Feb','Mrt','Apr','Mei','Jun','Jul','Aug','Sep','Okt','Nov','Dec'];
+    const maandData = Array(12).fill(0);
+
+    (e.dagen || []).forEach(d => {
+      const maand = new Date(d.datum).getMonth();
+      maandData[maand]++;
+    });
+
+    window.employeeMonthChartInstance = new Chart(monthCanvas,{
+      type:'bar',
+      data:{
+        labels: maanden,
+        datasets:[{
+          data: maandData,
+          backgroundColor:'#3b82f6',
+          borderColor:'#60a5fa',
+          borderWidth:2,
+          borderRadius:6
+        }]
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        plugins:{
+          legend:{display:false}
+        },
+        scales:{
+          x:{
+            ticks:{color:'#dbeafe'},
+            grid:{color:'rgba(255,255,255,.05)'}
+          },
+          y:{
+            beginAtZero:true,
+            ticks:{color:'#dbeafe'},
+            grid:{color:'rgba(255,255,255,.05)'}
+          }
+        }
+      }
+    });
+  }
   function showPage(page){
 
   document.getElementById('dashboardPage').style.display =
