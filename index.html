@@ -527,6 +527,45 @@ color:#e2e8f0;
   </main>
 </div>
 <script>
+  function showEmployeeProfile(naam){
+  const e = currentSummary[naam];
+  if(!e) return;
+
+  document.getElementById('employeeProfile').innerHTML = `
+    <h2>👤 ${e.naam}</h2>
+    <div class="muted" style="margin-bottom:22px;">
+      Totaal afwezig: ${e.totaal} dagen
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;">
+      <div class="detailblock blueline"><b>Totaal</b><br><span style="font-size:26px;">${e.totaal}</span></div>
+      <div class="detailblock redline"><b>Ziek</b><br><span style="font-size:26px;">${e.ziek}</span></div>
+      <div class="detailblock orangeline"><b>Gedeeltelijk ziek</b><br><span style="font-size:26px;">${e.gedeeltelijkZiek || 0}</span></div>
+      <div class="detailblock greenline"><b>Vakantie</b><br><span style="font-size:26px;">${e.vakantie}</span></div>
+      <div class="detailblock blueline"><b>Tijd voor Tijd</b><br><span style="font-size:26px;">${e.tijd}</span></div>
+      <div class="detailblock purpleline"><b>Buitengewoon verlof</b><br><span style="font-size:26px;">${e.buitengewoon || 0}</span></div>
+      <div class="detailblock yellowline"><b>Overig</b><br><span style="font-size:26px;">${e.overig}</span></div>
+    </div>
+
+    <h3>Historie</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Datum</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${(e.dagen || []).map(d => `
+          <tr>
+            <td>${new Date(d.datum).toLocaleDateString('nl-NL')}</td>
+            <td>${d.type}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
   function showPage(page){
 
   document.getElementById('dashboardPage').style.display =
