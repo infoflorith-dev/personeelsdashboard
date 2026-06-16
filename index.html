@@ -908,21 +908,27 @@ if(eind > vandaag){
 });
 
 Object.keys(dayMap).forEach(naam => {
-  summary[naam] = {
-    naam,
-    totaal: 0,
-    ziek: 0,
-    gedeeltelijkZiek: 0,
-    vakantie: 0,
-    tijd: 0,
-    buitengewoon: 0,
-    overig: 0
-  };
+summary[naam] = {
+  naam,
+  totaal: 0,
+  ziek: 0,
+  gedeeltelijkZiek: 0,
+  vakantie: 0,
+  tijd: 0,
+  buitengewoon: 0,
+  overig: 0,
+  dagen: []
+};
 
-  Object.values(dayMap[naam]).forEach(type => {
-    summary[naam][type] += 1;
-    summary[naam].totaal += 1;
+  Object.entries(dayMap[naam]).forEach(([datum, type]) => {
+  summary[naam][type] += 1;
+  summary[naam].totaal += 1;
+
+  summary[naam].dagen.push({
+    datum,
+    type
   });
+});
 });
 const monthTotals = {
   ziek: Array(12).fill(0),
