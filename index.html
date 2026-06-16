@@ -537,15 +537,72 @@ color:#e2e8f0;
       Totaal afwezig: ${e.totaal} dagen
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;">
-      <div class="detailblock blueline"><b>Totaal</b><br><span style="font-size:26px;">${e.totaal}</span></div>
-      <div class="detailblock redline"><b>Ziek</b><br><span style="font-size:26px;">${e.ziek}</span></div>
-      <div class="detailblock orangeline"><b>Gedeeltelijk ziek</b><br><span style="font-size:26px;">${e.gedeeltelijkZiek || 0}</span></div>
-      <div class="detailblock greenline"><b>Vakantie</b><br><span style="font-size:26px;">${e.vakantie}</span></div>
-      <div class="detailblock blueline"><b>Tijd voor Tijd</b><br><span style="font-size:26px;">${e.tijd}</span></div>
-      <div class="detailblock purpleline"><b>Buitengewoon verlof</b><br><span style="font-size:26px;">${e.buitengewoon || 0}</span></div>
-      <div class="detailblock yellowline"><b>Overig</b><br><span style="font-size:26px;">${e.overig}</span></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px;">
+
+  <div class="kpi" style="padding:16px;">
+    <div>
+      <div class="label">Totaal dagen</div>
+      <div class="value">${e.totaal}</div>
+      <div class="small">dagen</div>
     </div>
+    <div class="icon blue">🗓️</div>
+  </div>
+
+  <div class="kpi" style="padding:16px;">
+    <div>
+      <div class="label">Ziek</div>
+      <div class="value" style="color:#ef4444;">${e.ziek}</div>
+      <div class="small">dagen</div>
+    </div>
+    <div class="icon red">❤️</div>
+  </div>
+
+  <div class="kpi" style="padding:16px;">
+    <div>
+      <div class="label">Gedeeltelijk ziek</div>
+      <div class="value" style="color:#f97316;">${e.gedeeltelijkZiek || 0}</div>
+      <div class="small">dagen</div>
+    </div>
+    <div class="icon orange">〽️</div>
+  </div>
+
+  <div class="kpi" style="padding:16px;">
+    <div>
+      <div class="label">Vakantie</div>
+      <div class="value" style="color:#22c55e;">${e.vakantie}</div>
+      <div class="small">dagen</div>
+    </div>
+    <div class="icon green">🌴</div>
+  </div>
+
+  <div class="kpi" style="padding:16px;">
+    <div>
+      <div class="label">Tijd voor Tijd</div>
+      <div class="value" style="color:#2563eb;">${e.tijd}</div>
+      <div class="small">dagen</div>
+    </div>
+    <div class="icon blue">⏱️</div>
+  </div>
+
+  <div class="kpi" style="padding:16px;">
+    <div>
+      <div class="label">Buitengewoon verlof</div>
+      <div class="value" style="color:#8b5cf6;">${e.buitengewoon || 0}</div>
+      <div class="small">dagen</div>
+    </div>
+    <div class="icon purple">👤</div>
+  </div>
+
+  <div class="kpi" style="padding:16px;">
+    <div>
+      <div class="label">Overig</div>
+      <div class="value" style="color:#f59e0b;">${e.overig}</div>
+      <div class="small">dagen</div>
+    </div>
+    <div class="icon orange">•••</div>
+  </div>
+
+</div>
 
     <h3>Historie</h3>
     <table>
