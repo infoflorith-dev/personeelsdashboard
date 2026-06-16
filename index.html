@@ -977,7 +977,7 @@ monthChart.data.datasets[2].data = monthTotals.overig.map((v, i) => i > laatsteM
 monthChart.update();
     updateDashboard(summary);
 window.currentSummary = summary;
-
+console.log(summary[Object.keys(summary)[0]]);
 document.getElementById('sortSelect').onchange = function(){
     updateDashboard(window.currentSummary);
 };
