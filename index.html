@@ -556,12 +556,14 @@ color:#e2e8f0;
         </tr>
       </thead>
       <tbody>
-        ${(e.dagen || []).map(d => `
-          <tr>
-            <td>${new Date(d.datum).toLocaleDateString('nl-NL')}</td>
-            <td>${d.type}</td>
-          </tr>
-        `).join('')}
+       ${(e.dagen || [])
+  .sort((a,b) => new Date(b.datum) - new Date(a.datum))
+  .map(d => `
+    <tr>
+      <td>${new Date(d.datum).toLocaleDateString('nl-NL')}</td>
+      <td>${d.type}</td>
+    </tr>
+  `).join('')}
       </tbody>
     </table>
   `;
