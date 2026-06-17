@@ -1393,6 +1393,7 @@ function refreshPeriodYearSelects(){
   to.innerHTML =
     '<option value="">Tot jaar</option>' +
     years.map(year => `<option value="${year}">${year}</option>`).join('');
+  }
 function renderPeriodAnalysis(){
   const fromYear = Number(document.getElementById('periodFromYear').value);
   const toYear = Number(document.getElementById('periodToYear').value);
