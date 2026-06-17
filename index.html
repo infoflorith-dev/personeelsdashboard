@@ -1394,6 +1394,24 @@ function refreshPeriodYearSelects(){
     '<option value="">Tot jaar</option>' +
     years.map(year => `<option value="${year}">${year}</option>`).join('');
 }
+  function renderPeriodAnalysis(){
+  const fromYear = Number(document.getElementById('periodFromYear').value);
+  const toYear = Number(document.getElementById('periodToYear').value);
+  const result = document.getElementById('periodResults');
+
+  if(!fromYear || !toYear || fromYear > toYear){
+    result.innerHTML = `
+      <h2>Geen geldige periode</h2>
+      <div class="muted">Kies een beginjaar en eindjaar.</div>
+    `;
+    return;
+  }
+
+  result.innerHTML = `
+    <h2>Periode ${fromYear} t/m ${toYear}</h2>
+    <div class="muted">Analyse wordt hier opgebouwd.</div>
+  `;
+}
 document.getElementById('yearSelect').addEventListener('change', function(){
   if(!this.value) return;
   loadYearFromStorage(this.value);
