@@ -925,11 +925,14 @@ cumulativeMonthData.forEach(value => {
   
   function showPage(page){
 
-  document.getElementById('dashboardPage').style.display =
-    page === 'dashboard' ? 'block' : 'none';
+document.getElementById('dashboardPage').style.display =
+  page === 'dashboard' ? 'block' : 'none';
 
-  document.getElementById('employeesPage').style.display =
-    page === 'employees' ? 'block' : 'none';
+document.getElementById('employeesPage').style.display =
+  page === 'employees' ? 'block' : 'none';
+
+document.getElementById('periodPage').style.display =
+  page === 'period' ? 'block' : 'none';
 
   document.getElementById('navDashboard').classList.remove('active');
   document.getElementById('navEmployees').classList.remove('active');
