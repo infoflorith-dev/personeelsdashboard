@@ -1375,17 +1375,12 @@ const activeYear = Math.max(
     Object.keys(days).map(dateKey => new Date(dateKey).getFullYear())
   )
 );
-const activeYear = Math.max(
-  ...Object.values(dayMap).flatMap(days =>
-    Object.keys(days).map(dateKey => new Date(dateKey).getFullYear())
-  )
-);
 
 Object.defineProperty(summary, '__activeYear', {
   value: activeYear,
   enumerable: false
 });
-Object.keys(dayMap).forEach(naam => {
+
 Object.keys(dayMap).forEach(naam => {
   summary[naam] = {
     naam,
