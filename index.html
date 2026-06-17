@@ -1370,10 +1370,18 @@ if(eind > vandaag){
   }
 });
 
-const activeYear = Math.max(
-  ...Object.values(dayMap).flatMap(days =>
-    Object.keys(days).map(dateKey => new Date(dateKey).getFullYear())
-  )
+const yearCounts = {};
+
+Object.values(dayMap).forEach(days => {
+  Object.keys(days).forEach(dateKey => {
+    const jaar = new Date(dateKey).getFullYear();
+    yearCounts[jaar] = (yearCounts[jaar] || 0) + 1;
+  });
+});
+
+const activeYear = Number(
+  Object.entries(yearCounts)
+    .sort((a,b) => b[1] - a[1])[0][0]
 );
 
 Object.defineProperty(summary, '__activeYear', {
