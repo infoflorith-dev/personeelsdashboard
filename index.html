@@ -337,7 +337,7 @@ color:#e2e8f0;
      <div class="nav">
   <div id="navDashboard" class="active" onclick="showPage('dashboard')">📊 Dashboard</div>
   <div id="navEmployees" onclick="showPage('employees')">👥 Medewerkers</div>
-  <div>📅 Verzuim per periode</div>
+ <div id="navPeriod" onclick="showPage('period')">🗓️ Verzuim per periode</div>
   <div>⚠️ Signaleringslijst</div>
   <div>📄 Rapportages</div>
   <div>⚙️ Instellingen</div>
@@ -530,7 +530,42 @@ color:#e2e8f0;
   </div>
 
 </div>
-  </main>
+
+<div id="periodPage" style="display:none;">
+
+  <div class="topbar">
+    <div>
+      <h1>Verzuim per periode</h1>
+      <div class="muted">Analyse over meerdere jaren</div>
+    </div>
+  </div>
+
+  <div class="card" style="padding:24px;margin-bottom:18px;">
+    <h2>Periode kiezen</h2>
+
+    <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
+      <select id="periodFromYear" class="datebox">
+        <option value="">Van jaar</option>
+      </select>
+
+      <select id="periodToYear" class="datebox">
+        <option value="">Tot jaar</option>
+      </select>
+
+      <button onclick="renderPeriodAnalysis()" class="chip time">
+        Tonen
+      </button>
+    </div>
+  </div>
+
+  <div id="periodResults" class="card" style="padding:24px;">
+    <h2>Geen periode geselecteerd</h2>
+    <div class="muted">Kies een beginjaar en eindjaar om de analyse te tonen.</div>
+  </div>
+
+</div>
+
+</main>
 </div>
 <script>
 function showEmployeeProfile(naam){
