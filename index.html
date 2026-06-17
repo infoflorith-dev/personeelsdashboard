@@ -1381,8 +1381,10 @@ const activeYear = Math.max(
   )
 );
 
-summary.__activeYear = activeYear;
-
+Object.defineProperty(summary, '__activeYear', {
+  value: activeYear,
+  enumerable: false
+});
 Object.keys(dayMap).forEach(naam => {
 Object.keys(dayMap).forEach(naam => {
   summary[naam] = {
