@@ -1278,7 +1278,70 @@ typeChart.update();
     </tr>
   `).join('');
 }
+const STORAGE_PREFIX = 'personeelsdashboard_';
 
+function setSummaryYear(summary, year){
+  Object.defineProperty(summary, '__activeYear', {
+    value: Number(year),
+    enumerable: false,
+    configurable: true
+  });
+}
+
+function getSavedYears(){
+  return Object.keys(localStorage)
+    .filter(key => key.startsWith(STORAGE_PREFIX))
+    .map(key => Number(key.replace(STORAGE_PREFIX, '')))
+    .filter(year => !isNaN(year))
+    .sort((a,b) => a - b);
+}
+
+function saveYearToStorage(year, summary){
+  localStorage.setItem(
+    STORAGE_PREFIX + year,
+    JSON.stringify({
+      year: Number(year),
+      summary: summary
+    })
+  );
+
+  refreshYearSelect(Number(year));
+}
+
+function loadYearFromStorage(year){
+  const raw = localStorage.getItem(STORAGE_PREFIX + year);
+  if(!raw) return;
+
+  const data = JSON.parse(raw);
+  const summary = data.summary;
+
+  setSummaryYear(summary, data.year);
+
+  window.currentSummary = summary;
+  updateDashboard(summary);
+}
+
+function refreshYearSelect(activeYear){
+  const select = document.getElementById('yearSelect');
+  if(!select) return;
+
+  const years = getSavedYears();
+
+  select.innerHTML =
+    '<option value="">Jaar kiezen</option>' +
+    years.map(year => `
+      <option value="${year}" ${Number(activeYear) === year ? 'selected' : ''}>
+        ${year}
+      </option>
+    `).join('');
+}
+
+document.getElementById('yearSelect').addEventListener('change', function(){
+  if(!this.value) return;
+  loadYearFromStorage(this.value);
+});
+
+refreshYearSelect();
 document.getElementById('excelFile').addEventListener('change', function(e){
 
   const file = e.target.files[0];
