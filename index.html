@@ -1533,7 +1533,11 @@ const savedYears = getSavedYears();
 if(savedYears.length > 0){
   loadYearFromStorage(savedYears[savedYears.length - 1]);
 }
-
+document.getElementById('sortSelect').addEventListener('change', function(){
+  if(window.currentSummary){
+    updateDashboard(window.currentSummary);
+  }
+});
 document.getElementById('excelFile').addEventListener('change', function(e){
 
   const file = e.target.files[0];
