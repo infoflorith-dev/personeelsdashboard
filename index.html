@@ -1529,6 +1529,12 @@ monthChart.data.datasets[0].data = monthTotals.ziek.map((v, i) => i > laatsteMaa
 monthChart.data.datasets[1].data = monthTotals.vakantie.map((v, i) => i > laatsteMaand ? null : v);
 monthChart.data.datasets[2].data = monthTotals.overig.map((v, i) => i > laatsteMaand ? null : v);
 monthChart.update();
+    monthChart.update();
+
+saveYearToStorage(activeYear, summary);
+
+updateDashboard(summary);
+window.currentSummary = summary;
     updateDashboard(summary);
 window.currentSummary = summary;
 console.log(summary[Object.keys(summary)[0]]);
