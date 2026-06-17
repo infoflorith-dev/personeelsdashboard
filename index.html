@@ -1182,16 +1182,16 @@ function renderEmployeeList(summary){
 function updateDashboard(summary){
   currentSummary = summary;
   renderEmployeeList(summary);
+const activeYear = summary.__activeYear || new Date().getFullYear();
 
-  const vandaag = new Date();
+const datumTekst =
+  '01-01-' +
+  activeYear +
+  ' t/m ' +
+  '31-12-' +
+  activeYear;
 
-  const datumTekst =
-    '01-01-' +
-    vandaag.getFullYear() +
-    ' t/m ' +
-    vandaag.toLocaleDateString('nl-NL');
-
-  document.getElementById('dateRange').textContent = datumTekst;
+document.getElementById('dateRange').textContent = datumTekst;
   const employees = Object.values(summary);
   const totalEmployees = employees.length;
 
@@ -1375,7 +1375,15 @@ const activeYear = Math.max(
     Object.keys(days).map(dateKey => new Date(dateKey).getFullYear())
   )
 );
+const activeYear = Math.max(
+  ...Object.values(dayMap).flatMap(days =>
+    Object.keys(days).map(dateKey => new Date(dateKey).getFullYear())
+  )
+);
 
+summary.__activeYear = activeYear;
+
+Object.keys(dayMap).forEach(naam => {
 Object.keys(dayMap).forEach(naam => {
   summary[naam] = {
     naam,
