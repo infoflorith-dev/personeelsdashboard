@@ -1348,6 +1348,7 @@ function saveYearToStorage(year, summary){
   );
 
   refreshYearSelect(Number(year));
+  refreshPeriodYearSelects();
 }
 
 function loadYearFromStorage(year){
@@ -1377,13 +1378,29 @@ function refreshYearSelect(activeYear){
       </option>
     `).join('');
 }
+function refreshPeriodYearSelects(){
+  const years = getSavedYears();
 
+  const from = document.getElementById('periodFromYear');
+  const to = document.getElementById('periodToYear');
+
+  if(!from || !to) return;
+
+  from.innerHTML =
+    '<option value="">Van jaar</option>' +
+    years.map(year => `<option value="${year}">${year}</option>`).join('');
+
+  to.innerHTML =
+    '<option value="">Tot jaar</option>' +
+    years.map(year => `<option value="${year}">${year}</option>`).join('');
+}
 document.getElementById('yearSelect').addEventListener('change', function(){
   if(!this.value) return;
   loadYearFromStorage(this.value);
 });
 
 refreshYearSelect();
+  refreshPeriodYearSelects();
 document.getElementById('excelFile').addEventListener('change', function(e){
 
   const file = e.target.files[0];
