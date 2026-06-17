@@ -1393,8 +1393,7 @@ function refreshPeriodYearSelects(){
   to.innerHTML =
     '<option value="">Tot jaar</option>' +
     years.map(year => `<option value="${year}">${year}</option>`).join('');
-}
-  function renderPeriodAnalysis(){
+function renderPeriodAnalysis(){
   const fromYear = Number(document.getElementById('periodFromYear').value);
   const toYear = Number(document.getElementById('periodToYear').value);
   const result = document.getElementById('periodResults');
@@ -1407,9 +1406,118 @@ function refreshPeriodYearSelects(){
     return;
   }
 
+  const combined = {};
+
+  for(let year = fromYear; year <= toYear; year++){
+    const raw = localStorage.getItem(STORAGE_PREFIX + year);
+    if(!raw) continue;
+
+    const data = JSON.parse(raw);
+    const summary = data.summary || {};
+
+    Object.values(summary).forEach(e => {
+      if(!e || !e.naam) return;
+
+      if(!combined[e.naam]){
+        combined[e.naam] = {
+          naam: e.naam,
+          totaal: 0,
+          ziek: 0,
+          gedeeltelijkZiek: 0,
+          vakantie: 0,
+          tijd: 0,
+          buitengewoon: 0,
+          overig: 0
+        };
+      }
+
+      combined[e.naam].totaal += e.totaal || 0;
+      combined[e.naam].ziek += e.ziek || 0;
+      combined[e.naam].gedeeltelijkZiek += e.gedeeltelijkZiek || 0;
+      combined[e.naam].vakantie += e.vakantie || 0;
+      combined[e.naam].tijd += e.tijd || 0;
+      combined[e.naam].buitengewoon += e.buitengewoon || 0;
+      combined[e.naam].overig += e.overig || 0;
+    });
+  }
+
+  const employees = Object.values(combined);
+  const totalEmployees = employees.length;
+  const totalDays = employees.reduce((s,e) => s + e.totaal, 0);
+  const sickDays = employees.reduce((s,e) => s + e.ziek, 0);
+  const partialDays = employees.reduce((s,e) => s + e.gedeeltelijkZiek, 0);
+  const holidayDays = employees.reduce((s,e) => s + e.vakantie, 0);
+
+  const topList = (key) =>
+    [...employees].sort((a,b) => (b[key] || 0) - (a[key] || 0)).slice(0,10);
+
+  const rankTable = (title, key, color) => `
+    <div class="card" style="padding:18px;">
+      <h3 style="margin-top:0;">${title}</h3>
+      <table>
+        <thead>
+          <tr><th>#</th><th>Medewerker</th><th>Dagen</th></tr>
+        </thead>
+        <tbody>
+          ${topList(key).map((e,i) => `
+            <tr>
+              <td>${i + 1}</td>
+              <td>${e.naam}</td>
+              <td style="color:${color};font-weight:800;">${e[key] || 0}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+
   result.innerHTML = `
     <h2>Periode ${fromYear} t/m ${toYear}</h2>
-    <div class="muted">Analyse wordt hier opgebouwd.</div>
+
+    <section class="kpis" style="grid-template-columns:repeat(5,1fr);margin-top:18px;">
+      <div class="kpi"><div class="icon blue">👥</div><div><div class="label">Medewerkers</div><div class="value">${totalEmployees}</div></div></div>
+      <div class="kpi"><div class="icon purple">🗓️</div><div><div class="label">Totaal dagen</div><div class="value">${totalDays}</div></div></div>
+      <div class="kpi"><div class="icon red">❤️</div><div><div class="label">Ziek</div><div class="value">${sickDays}</div></div></div>
+      <div class="kpi"><div class="icon orange">🩹</div><div><div class="label">Gedeeltelijk ziek</div><div class="value">${partialDays}</div></div></div>
+      <div class="kpi"><div class="icon green">🌴</div><div><div class="label">Vakantie</div><div class="value">${holidayDays}</div></div></div>
+    </section>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:22px 0;">
+      ${rankTable('🌴 Meeste vakantiedagen', 'vakantie', '#22c55e')}
+      ${rankTable('❤️ Meeste ziektedagen', 'ziek', '#ef4444')}
+      ${rankTable('🩹 Meeste gedeeltelijk ziek', 'gedeeltelijkZiek', '#f97316')}
+      ${rankTable('📊 Meeste totale absentie', 'totaal', '#3b82f6')}
+    </div>
+
+    <h3>Complete analyse ${fromYear} t/m ${toYear}</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Medewerker</th>
+          <th>Totaal</th>
+          <th>Ziek</th>
+          <th>Gedeeltelijk ziek</th>
+          <th>Vakantie</th>
+          <th>TVT</th>
+          <th>Buitengewoon</th>
+          <th>Overig</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${employees.sort((a,b) => b.totaal - a.totaal).map(e => `
+          <tr>
+            <td>${e.naam}</td>
+            <td><b>${e.totaal}</b></td>
+            <td style="color:#ef4444">${e.ziek}</td>
+            <td style="color:#f97316">${e.gedeeltelijkZiek}</td>
+            <td style="color:#22c55e">${e.vakantie}</td>
+            <td style="color:#3b82f6">${e.tijd}</td>
+            <td style="color:#8b5cf6">${e.buitengewoon}</td>
+            <td style="color:#f59e0b">${e.overig}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
   `;
 }
 document.getElementById('yearSelect').addEventListener('change', function(){
