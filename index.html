@@ -1226,7 +1226,35 @@ function renderEmployeeList(summary){
     </div>
   `).join('');
 }
+function updateMonthChartFromSummary(summary){
 
+    const monthTotals = {
+        ziek: Array(12).fill(0),
+        vakantie: Array(12).fill(0),
+        overig: Array(12).fill(0)
+    };
+
+    Object.values(summary).forEach(e => {
+        (e.dagen || []).forEach(d => {
+
+            const maand = new Date(d.datum).getMonth();
+
+            if(d.type === 'ziek' || d.type === 'gedeeltelijkZiek'){
+                monthTotals.ziek[maand]++;
+            }else if(d.type === 'vakantie'){
+                monthTotals.vakantie[maand]++;
+            }else{
+                monthTotals.overig[maand]++;
+            }
+
+        });
+    });
+
+    monthChart.data.datasets[0].data = monthTotals.ziek;
+    monthChart.data.datasets[1].data = monthTotals.vakantie;
+    monthChart.data.datasets[2].data = monthTotals.overig;
+    monthChart.update();
+}
 function updateDashboard(summary){
   currentSummary = summary;
   renderEmployeeList(summary);
@@ -1360,8 +1388,9 @@ function loadYearFromStorage(year){
 
   setSummaryYear(summary, data.year);
 
-  window.currentSummary = summary;
-  updateDashboard(summary);
+ window.currentSummary = summary;
+updateDashboard(summary);
+updateMonthChartFromSummary(summary);
 }
 
 function refreshYearSelect(activeYear){
