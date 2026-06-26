@@ -1233,11 +1233,19 @@ function updateMonthChartFromSummary(summary){
         vakantie: Array(12).fill(0),
         overig: Array(12).fill(0)
     };
+const activeYear = summary.__activeYear || new Date().getFullYear();
+const vandaag = new Date();
+vandaag.setHours(0,0,0,0);
 
-    Object.values(summary).forEach(e => {
-        (e.dagen || []).forEach(d => {
+Object.values(summary).forEach(e => {
+    (e.dagen || []).forEach(d => {
 
-            const maand = new Date(d.datum).getMonth();
+        const datum = new Date(d.datum);
+
+        if(datum.getFullYear() !== activeYear) return;
+        if(activeYear === vandaag.getFullYear() && datum > vandaag) return;
+
+        const maand = datum.getMonth();
 
             if(d.type === 'ziek' || d.type === 'gedeeltelijkZiek'){
                 monthTotals.ziek[maand]++;
