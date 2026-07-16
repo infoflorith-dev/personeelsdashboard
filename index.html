@@ -1412,9 +1412,10 @@ function saveYearToStorage(year, summary){
   localStorage.setItem(
     STORAGE_PREFIX + year,
     JSON.stringify({
-      year: Number(year),
-      summary: summary
-    })
+     year: Number(year),
+summary: summary,
+futureLeave: window.futureLeave || []
+})
   );
 
   refreshYearSelect(Number(year));
