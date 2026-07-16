@@ -1678,7 +1678,18 @@ vandaag.setHours(0,0,0,0);
 const eindeJaar = new Date(vandaag.getFullYear(), 11, 31);
 eindeJaar.setHours(23,59,59,999);
 if(start > vandaag) return;
-
+if(
+  ['vakantie', 'tijd', 'buitengewoon', 'overig'].includes(type) &&
+  eind >= vandaag &&
+  start <= eindeJaar
+){
+  futureLeave.push({
+    naam,
+    type,
+    vanaf: new Date(start < vandaag ? vandaag : start),
+    tot: new Date(eind > eindeJaar ? eindeJaar : eind)
+  });
+}
 if(eind > vandaag){
   eind.setTime(vandaag.getTime());
 }
