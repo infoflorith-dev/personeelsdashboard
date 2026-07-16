@@ -1663,21 +1663,21 @@ if(
 ){
   type = 'gedeeltelijkZiek';
 }
-  const start = excelDateToJSDate(row[startCol]);
-  let eind = excelDateToJSDate(row[eindCol]);
 
-  if(!naam || !start || !eind) return;
+const start = excelDateToJSDate(row[startCol]);
+let eind = excelDateToJSDate(row[eindCol]);
 
-  if(!dayMap[naam]) dayMap[naam] = {};
+if(!naam || !start || !eind) return;
 
- 
-const current = new Date(start);
+if(!dayMap[naam]) dayMap[naam] = {};
 
 const vandaag = new Date();
 vandaag.setHours(0,0,0,0);
+
 const eindeJaar = new Date(vandaag.getFullYear(), 11, 31);
 eindeJaar.setHours(23,59,59,999);
-if(start > vandaag) return;
+
+/* Toekomstige verlofaanvragen apart bewaren */
 if(
   ['vakantie', 'tijd', 'buitengewoon', 'overig'].includes(type) &&
   eind >= vandaag &&
@@ -1690,15 +1690,21 @@ if(
     tot: new Date(eind > eindeJaar ? eindeJaar : eind)
   });
 }
+
+/* Bestaand dashboard blijft alleen tellen tot en met vandaag */
+if(start > vandaag) return;
+
 if(eind > vandaag){
   eind.setTime(vandaag.getTime());
 }
 
-  while(current <= eind){
-    const day = current.getDay();
+const current = new Date(start);
 
-   if(day !== 0 && day !== 6 && !isFeestdag(current)){
-      const dateKey = current.toISOString().split('T')[0];
+while(current <= eind){
+  const day = current.getDay();
+
+  if(day !== 0 && day !== 6 && !isFeestdag(current)){
+    const dateKey = current.toISOString().split('T')[0];
 
       const priority = {
         vakantie: 6,
