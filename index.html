@@ -338,6 +338,7 @@ color:#e2e8f0;
   <div id="navDashboard" class="active" onclick="showPage('dashboard')">📊 Dashboard</div>
   <div id="navEmployees" onclick="showPage('employees')">👥 Medewerkers</div>
  <div id="navPeriod" onclick="showPage('period')">🗓️ Verzuim per periode</div>
+   <div id="navLeave" onclick="showPage('leave')">🌴 Verlofdagen</div>    
   <div>⚠️ Signaleringslijst</div>
   <div>📄 Rapportages</div>
   <div>⚙️ Instellingen</div>
@@ -564,7 +565,36 @@ color:#e2e8f0;
   </div>
 
 </div>
+<div id="leavePage" style="display:none;">
 
+    <div class="topbar">
+        <div>
+            <h1>Verlofdagen</h1>
+            <div class="muted">
+                Toekomstige verlofaanvragen
+            </div>
+        </div>
+    </div>
+
+    <div class="card" style="padding:24px">
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+            <h2>Verlof vanaf vandaag</h2>
+
+            <button onclick="window.print()" class="chip vakantie">
+                🖨️ Afdrukken
+            </button>
+        </div>
+
+        <div id="leaveList">
+            <div class="muted">
+                Nog geen verlofgegevens gevonden.
+            </div>
+        </div>
+
+    </div>
+
+</div>
 </main>
 </div>
 <script>
