@@ -1869,6 +1869,7 @@ updateDashboard(summary);
 window.currentSummary = summary;
     updateDashboard(summary);
 window.currentSummary = summary;
+    renderLeaveList();
 console.log(summary[Object.keys(summary)[0]]);
 document.getElementById('sortSelect').onchange = function(){
     updateDashboard(window.currentSummary);
