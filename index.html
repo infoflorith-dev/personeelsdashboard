@@ -963,11 +963,12 @@ document.getElementById('employeesPage').style.display =
 
 document.getElementById('periodPage').style.display =
   page === 'period' ? 'block' : 'none';
-
+document.getElementById('leavePage').style.display =
+  page === 'leave' ? 'block' : 'none';
  document.getElementById('navDashboard').classList.remove('active');
 document.getElementById('navEmployees').classList.remove('active');
 document.getElementById('navPeriod').classList.remove('active');
-
+document.getElementById('navLeave').classList.remove('active');
   if(page === 'dashboard'){
    document.getElementById('navDashboard').classList.add('active');
   }
@@ -977,6 +978,9 @@ document.getElementById('navPeriod').classList.remove('active');
   }
     if(page === 'period'){
   document.getElementById('navPeriod').classList.add('active');
+}
+    if(page === 'leave'){
+  document.getElementById('navLeave').classList.add('active');
 }
 }
   Chart.defaults.color = '#dbeafe';
