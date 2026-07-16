@@ -1434,8 +1434,54 @@ window.futureLeave = data.futureLeave || [];
  window.currentSummary = summary;
 updateDashboard(summary);
 updateMonthChartFromSummary(summary);
+  renderLeaveList();
 }
+function renderLeaveList(){
+  const container = document.getElementById('leaveList');
+  if(!container) return;
 
+  const verlof = [...(window.futureLeave || [])]
+    .sort((a,b) => new Date(a.vanaf) - new Date(b.vanaf));
+
+  if(verlof.length === 0){
+    container.innerHTML = `
+      <div class="muted">
+        Geen toekomstige verlofaanvragen gevonden.
+      </div>
+    `;
+    return;
+  }
+
+  const typeNamen = {
+    vakantie: 'Vakantie',
+    tijd: 'Tijd voor Tijd',
+    buitengewoon: 'Buitengewoon verlof',
+    overig: 'Overig verlof'
+  };
+
+  container.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Medewerker</th>
+          <th>Vanaf</th>
+          <th>Tot en met</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${verlof.map(item => `
+          <tr>
+            <td><b>${item.naam}</b></td>
+            <td>${new Date(item.vanaf).toLocaleDateString('nl-NL')}</td>
+            <td>${new Date(item.tot).toLocaleDateString('nl-NL')}</td>
+            <td>${typeNamen[item.type] || item.type}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
 function refreshYearSelect(activeYear){
   const select = document.getElementById('yearSelect');
   if(!select) return;
