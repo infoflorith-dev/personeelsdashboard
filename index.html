@@ -1428,7 +1428,7 @@ function loadYearFromStorage(year){
 
   const data = JSON.parse(raw);
   const summary = data.summary;
-
+window.futureLeave = data.futureLeave || [];
   setSummaryYear(summary, data.year);
 
  window.currentSummary = summary;
