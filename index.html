@@ -581,7 +581,7 @@ color:#e2e8f0;
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
             <h2>Verlof vanaf vandaag</h2>
 
-            <button onclick="window.print()" class="chip holiday">
+           <button onclick="printSelectedLeave()" class="chip holiday no-print">
                 🖨️ Afdrukken
             </button>
         </div>
@@ -1463,24 +1463,71 @@ function renderLeaveList(){
     <table>
       <thead>
         <tr>
+          <th class="no-print" style="width:55px;text-align:center;">
+            <input
+              type="checkbox"
+              checked
+              title="Alles selecteren of deselecteren"
+              onchange="toggleAllLeaveRows(this.checked)"
+            >
+          </th>
           <th>Medewerker</th>
           <th>Vanaf</th>
           <th>Tot en met</th>
           <th>Type</th>
         </tr>
       </thead>
+
       <tbody>
         ${verlof.map(item => `
-          <tr>
+          <tr class="leave-row print-selected">
+            <td class="no-print" style="text-align:center;">
+              <input
+                type="checkbox"
+                class="leave-checkbox"
+                checked
+                onchange="
+                  this.closest('tr').classList.toggle(
+                    'print-selected',
+                    this.checked
+                  )
+                "
+              >
+            </td>
+
             <td><b>${item.naam}</b></td>
-            <td>${new Date(item.vanaf).toLocaleDateString('nl-NL')}</td>
-            <td>${new Date(item.tot).toLocaleDateString('nl-NL')}</td>
-            <td>${typeNamen[item.type] || item.type}</td>
+
+            <td>
+              ${new Date(item.vanaf).toLocaleDateString('nl-NL')}
+            </td>
+
+            <td>
+              ${new Date(item.tot).toLocaleDateString('nl-NL')}
+            </td>
+
+            <td>
+              ${typeNamen[item.type] || item.type}
+            </td>
           </tr>
         `).join('')}
       </tbody>
     </table>
   `;
+}
+
+function toggleAllLeaveRows(checked){
+  document.querySelectorAll('.leave-checkbox').forEach(checkbox => {
+    checkbox.checked = checked;
+
+    checkbox.closest('tr').classList.toggle(
+      'print-selected',
+      checked
+    );
+  });
+}
+
+function printSelectedLeave(){
+  window.print();
 }
 function refreshYearSelect(activeYear){
   const select = document.getElementById('yearSelect');
