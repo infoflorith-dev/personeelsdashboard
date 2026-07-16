@@ -1568,7 +1568,35 @@ function toggleAllLeaveRows(checked){
 }
 
 function printSelectedLeave(){
+  const rows = document.querySelectorAll('.leave-row');
+  const noPrintElements = document.querySelectorAll('#leavePage .no-print');
+
+  rows.forEach(row => {
+    const checkbox = row.querySelector('.leave-checkbox');
+
+    row.dataset.oldDisplay = row.style.display;
+
+    if(checkbox && !checkbox.checked){
+      row.style.display = 'none';
+    }
+  });
+
+  noPrintElements.forEach(element => {
+    element.dataset.oldDisplay = element.style.display;
+    element.style.display = 'none';
+  });
+
   window.print();
+
+  rows.forEach(row => {
+    row.style.display = row.dataset.oldDisplay || '';
+    delete row.dataset.oldDisplay;
+  });
+
+  noPrintElements.forEach(element => {
+    element.style.display = element.dataset.oldDisplay || '';
+    delete element.dataset.oldDisplay;
+  });
 }
 function refreshYearSelect(activeYear){
   const select = document.getElementById('yearSelect');
